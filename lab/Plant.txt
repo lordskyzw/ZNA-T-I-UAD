@@ -12,4 +12,4 @@ CREATE ULTIMATE ANOMALIES DATASET ()
 
 
 APP FUNCTIONALITIES:
-- forecasting(user_id), get_anomalies
+- forecasting(user_id, period) should return a graph use seaborn and matplotlib, get_anomalies(plan)
