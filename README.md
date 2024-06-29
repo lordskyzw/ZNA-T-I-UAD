@@ -55,4 +55,9 @@ This project is licensed under the MIT License.
 
 Thank you for your interest in the **Zimbabwe National Army Network Resource Analyzer**. We look forward to your contributions and feedback!
 
-![a project from the Zimbabwe National Defense University](/project%20material/images/zndu.jpeg)
+
+
+<p align="center">
+  <img src="/project material/images/zndu.jpeg" alt="a project from the Zimbabwe National Defense University" style="width:100%; max-width:600px;">
+</p>
+
