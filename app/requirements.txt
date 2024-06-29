@@ -1,0 +1,9 @@
+flask
+flask-cors
+prophet
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+pymongo
