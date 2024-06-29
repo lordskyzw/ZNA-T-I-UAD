@@ -1,5 +1,9 @@
 # Zimbabwe National Army Network Resource Analyzer
 
+<p align="center">
+  <img src="/project material/images/zndu.jpeg" alt="a project from the Zimbabwe National Defense University" style="width:100%; max-width:600px;">
+</p>
+
 ## Overview
 The **Zimbabwe National Army** aims to develop a product that analyzes the usage of network resources within a given network. This project is divided into two main parts:
 
@@ -57,7 +61,5 @@ Thank you for your interest in the **Zimbabwe National Army Network Resource Ana
 
 
 
-<p align="center">
-  <img src="/project material/images/zndu.jpeg" alt="a project from the Zimbabwe National Defense University" style="width:100%; max-width:600px;">
-</p>
+
 
