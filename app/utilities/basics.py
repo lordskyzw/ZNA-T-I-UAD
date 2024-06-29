@@ -1,9 +1,11 @@
 from pymongo import MongoClient
 import os
 
+mongo_uri = os.getenv('MONGO_URI')
+
 def check_credentials(username, password):
     # Connect to MongoDB
-    client = MongoClient(os.environ.get("MONGO_URI"))
+    client = MongoClient(mongo_uri)
     db = client['ZNA']
     collection = db['users']  
 
