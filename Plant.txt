@@ -1,0 +1,15 @@
+CREATE MASTER DATASET (check)
+- now that we have the merged_dataset.csv, we can use that to find anomalies
+
+
+CREATE SURF ANOMALIES DATASET (check)
+
+CREATE ULTIMATE ANOMALIES DATASET ()
+
+
+
+
+
+
+APP FUNCTIONALITIES:
+- forecasting(user_id), get_anomalies
