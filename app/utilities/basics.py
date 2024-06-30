@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import os
 import pandas as pd
 from prophet import Prophet
+import logging
 
 
 
@@ -46,34 +47,19 @@ def check_credentials(username, password):
     else:
         return False
 
-# def user_usage(user_id):
-#     file_path = find_file('updated_merged_dataset2_with_calls.csv')
-#     if file_path:
-#         df = pd.read_csv(file_path)
-#         print('file found')
-#     else:
-#         raise FileNotFoundError('updated_merged_dataset2_with_calls.csv not found')
-#     try:
-#         user_data = df[df['user_id'] == int(user_id)].to_dict(orient='records')
-#         print(user_data)
-#     except Exception as e:
-#         print(str(e))
-#     return user_data
+
 
 def user_usage(user_id):
     file_path = find_file('updated_merged_dataset2_with_calls.csv')
     if file_path:
         df = pd.read_csv(file_path)
-        print('file found')
-        print(df.head())  # Print first few rows to verify structure
     else:
         raise FileNotFoundError('updated_merged_dataset2_with_calls.csv not found')
     
     try:
         user_data = df[df['user_id'] == int(user_id)].to_dict(orient='records')
-        print(user_data)
     except Exception as e:
-        print(str(e))
+        logging.error(e)
     
     return user_data
 
@@ -83,8 +69,6 @@ def get_predictions(user_id, days_ahead):
     file_path = find_file('updated_merged_dataset2_with_calls.csv')
     if file_path:
         df = pd.read_csv(file_path)
-        print('file found')
-        print(df.head())
     else:
         raise FileNotFoundError('updated_merged_dataset2_with_calls.csv not found')
     

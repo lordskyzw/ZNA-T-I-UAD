@@ -16,7 +16,6 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        logging.info(f'Username: {username}, Password: {password}')
 
         if check_credentials(username, password):
             session.permanent = True
@@ -34,7 +33,6 @@ def check_usage(user_id):
         return 'Unauthorized', 401
     
     try:
-        print(f'User ID: {user_id}')
         user_data = user_usage(user_id)
         if not user_data:
             return 'User data not found', 404
@@ -49,7 +47,6 @@ def predict(user_id):
         return 'Unauthorized', 401
     
     try:
-        print(f'PREDICTION User ID: {user_id}')
         internet_prediction, messages_prediction, calls_prediction = get_predictions(user_id=user_id, days_ahead=7)
         
         response = {
