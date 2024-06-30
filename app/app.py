@@ -43,15 +43,15 @@ def check_usage(user_id):
         return str(e), 400
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.route('/predict/<int:user_id>', methods=['GET'])
+def predict(user_id):
     if 'username' not in session:
         return 'Unauthorized', 401
     
     try:
-        user_id = request.form['user_id']
-        days_ahead = request.form['days_ahead']
-        internet_prediction, messages_prediction, calls_prediction = get_predictions(user_id=user_id, days_ahead=days_ahead)
+        print(f'PREDICTION User ID: {user_id}')
+        internet_prediction, messages_prediction, calls_prediction = get_predictions(user_id=user_id, days_ahead=7)
+        
         response = {
             'internet_prediction': internet_prediction,
             'messages_prediction': messages_prediction,
@@ -59,6 +59,7 @@ def predict():
         }
         
         return jsonify(response), 200
+    
     except Exception as e:
         return str(e), 400
 

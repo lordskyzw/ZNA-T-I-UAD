@@ -34,7 +34,7 @@
             </div>
             <div class="flex space-x-4">
                 <button id="check-usage-btn" class="flex-1 py-2 px-4 bg-blue-500 text-white rounded">Check Usage</button>
-                <button class="flex-1 py-2 px-4 bg-green-500 text-white rounded">Forecast Usage</button>
+                <button id="forecast-usage-btn" class="flex-1 py-2 px-4 bg-green-500 text-white rounded">Forecast Usage</button>
             </div>
             <div id="usage-chart" class="mt-6">
                 <canvas id="usage-chart-canvas"></canvas>
@@ -186,6 +186,118 @@
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+        
+        document.getElementById('forecast-usage-btn').addEventListener('click', () => {
+        const userId = document.getElementById('user-id').value;
+        fetch(`/predict/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                
+                // Extract data for the charts
+                const internetLabels = data.internet_prediction.map(item => new Date(item.ds));
+                const internetUsageData = data.internet_prediction.map(item => item.yhat);
+                const messagesData = data.messages_prediction.map(item => item.yhat);
+                const minutesData = data.calls_prediction.map(item => item.yhat);
+
+                // Destroy existing charts if they exist
+                if (usageChart) {
+                    usageChart.destroy();
+                }
+                if (messagesChart) {
+                    messagesChart.destroy();
+                }
+                if (minutesChart) {
+                    minutesChart.destroy();
+                }
+
+                // Data Usage Prediction Chart
+                const usageCtx = document.getElementById('usage-chart-canvas').getContext('2d');
+                usageChart = new Chart(usageCtx, {
+                    type: 'line',
+                    data: {
+                        labels: internetLabels,
+                        datasets: [{
+                            label: 'Predicted Data Usage (MB)',
+                            data: internetUsageData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Messages Prediction Chart
+                const messagesCtx = document.getElementById('messages-chart-canvas').getContext('2d');
+                messagesChart = new Chart(messagesCtx, {
+                    type: 'line',
+                    data: {
+                        labels: internetLabels,  // Reuse internetLabels for the x-axis
+                        datasets: [{
+                            label: 'Predicted Messages Used',
+                            data: messagesData,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Minutes Prediction Chart
+                const minutesCtx = document.getElementById('minutes-chart-canvas').getContext('2d');
+                minutesChart = new Chart(minutesCtx, {
+                    type: 'line',
+                    data: {
+                        labels: internetLabels,  // Reuse internetLabels for the x-axis
+                        datasets: [{
+                            label: 'Predicted Minutes Used',
+                            data: minutesData,
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+
+
     </script>
 </body>
 </html>
