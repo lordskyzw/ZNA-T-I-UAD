@@ -18,12 +18,12 @@ def find_file(filename, search_path="."):
             return os.path.join(root, filename)
     return None
 
-file_path = find_file('merged_dataset2.csv')
+file_path = find_file('updated_merged_dataset2_with_calls.csv')
 
 if file_path:
     df = pd.read_csv(file_path)
 else:
-    raise FileNotFoundError('merged_dataset2.csv not found')
+    raise FileNotFoundError('updated_merged_dataset2_with_calls.csv not found')
 
 
 
@@ -46,12 +46,12 @@ def check_credentials(username, password):
         return False
 
 # def user_usage(user_id):
-#     file_path = find_file('merged_dataset2.csv')
+#     file_path = find_file('updated_merged_dataset2_with_calls.csv')
 #     if file_path:
 #         df = pd.read_csv(file_path)
 #         print('file found')
 #     else:
-#         raise FileNotFoundError('merged_dataset2.csv not found')
+#         raise FileNotFoundError('updated_merged_dataset2_with_calls.csv not found')
 #     try:
 #         user_data = df[df['user_id'] == int(user_id)].to_dict(orient='records')
 #         print(user_data)
@@ -60,13 +60,13 @@ def check_credentials(username, password):
 #     return user_data
 
 def user_usage(user_id):
-    file_path = find_file('merged_dataset2.csv')
+    file_path = find_file('updated_merged_dataset2_with_calls.csv')
     if file_path:
         df = pd.read_csv(file_path)
         print('file found')
         print(df.head())  # Print first few rows to verify structure
     else:
-        raise FileNotFoundError('merged_dataset2.csv not found')
+        raise FileNotFoundError('updated_merged_dataset2_with_calls.csv not found')
     
     try:
         user_data = df[df['user_id'] == int(user_id)].to_dict(orient='records')

@@ -43,6 +43,12 @@
             <div id="usage-chart" class="mt-6">
                 <canvas id="usage-chart-canvas"></canvas>
             </div>
+            <div id="messages-chart" class="mt-6">
+                <canvas id="messages-chart-canvas"></canvas>
+            </div>
+            <div id="minutes-chart" class="mt-6">
+                <canvas id="minutes-chart-canvas"></canvas>
+            </div>
         </div>
         <div id="tab2-content" class="tab-content">
             <div class="mb-4">
@@ -83,17 +89,74 @@
                     console.log(data);
                     const labels = data.map(item => item.session_date);
                     const usageData = data.map(item => item.mb_used);
+                    const messagesData = data.map(item => item.total_messages_used);
+                    const minutesData = data.map(item => item.total_minutes);
 
-                    const ctx = document.getElementById('usage-chart-canvas').getContext('2d');
-                    new Chart(ctx, {
+                    // Data Usage Chart
+                    const usageCtx = document.getElementById('usage-chart-canvas').getContext('2d');
+                    new Chart(usageCtx, {
                         type: 'line',
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'Usage (MB)',
+                                label: 'Data Usage (MB)',
                                 data: usageData,
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true,
+                                tension: 0.4,
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Messages Chart
+                    const messagesCtx = document.getElementById('messages-chart-canvas').getContext('2d');
+                    new Chart(messagesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Messages Used',
+                                data: messagesData,
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                fill: true,
+                                tension: 0.4,
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Minutes Chart
+                    const minutesCtx = document.getElementById('minutes-chart-canvas').getContext('2d');
+                    new Chart(minutesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Minutes Used',
+                                data: minutesData,
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                backgroundColor: 'rgba(255, 159, 64, 0.2)',
                                 fill: true,
                                 tension: 0.4,
                             }]
@@ -115,4 +178,3 @@
     </script>
 </body>
 </html>
-<!-- The analysis.html file is a bit more complex than the login.html file. -->
