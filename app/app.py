@@ -1,7 +1,8 @@
-from flask import Flask, request, session, render_template
+from flask import Flask, request, session, render_template, jsonify
 from flask_cors import CORS
-from utilities.basics import check_credentials
+from utilities.basics import check_credentials, user_usage
 from dotenv import load_dotenv
+import logging
 import os
 
 load_dotenv()
@@ -13,26 +14,34 @@ CORS(app)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        data = request.get_json()
-        username = data['username']
-        password = data['password']
+        username = request.form['username']
+        password = request.form['password']
+        logging.info(f'Username: {username}, Password: {password}')
 
         if check_credentials(username, password):
             session.permanent = True
             session['username'] = username
-            return 'Login Successful', 200
+
+            return render_template('analysis.html')
         else:
             return 'Login Failed', 401
 
     return render_template('login.html')
 
-@app.route('/endpoint2', methods=['POST'])
-def endpoint2():
+@app.route('/user_usage/<int:user_id>', methods=['GET'])
+def check_usage(user_id):
     if 'username' not in session:
         return 'Unauthorized', 401
+    
+    try:
+        print(f'User ID: {user_id}')
+        user_data = user_usage(user_id)
+        if not user_data:
+            return 'User data not found', 404
+        return jsonify(user_data), 200
+    except Exception as e:
+        return str(e), 400
 
-    # Handle logic for endpoint2
-    return 'Endpoint 2'
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -40,4 +49,4 @@ def logout():
     return 'Logged Out', 200
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

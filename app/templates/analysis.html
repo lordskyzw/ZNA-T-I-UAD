@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Resource Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@latest"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-4 text-center">NETWORK RESOURCE ANALYSIS</h1>
+        <div class="flex mb-4">
+            <button id="tab1-btn" class="flex-1 py-2 px-4 bg-blue-500 text-white rounded-t-lg">User Analysis</button>
+            <button id="tab2-btn" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-t-lg">Network Analysis</button>
+        </div>
+        <div id="tab1-content" class="tab-content active">
+            <div class="mb-4">
+                <label for="user-id" class="block text-gray-700">Enter User ID</label>
+                <input type="text" id="user-id" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="time-period" class="block text-gray-700">Time Period</label>
+                <input type="text" id="time-period" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="flex space-x-4">
+                <button id="check-usage-btn" class="flex-1 py-2 px-4 bg-blue-500 text-white rounded">Check Usage</button>
+                <button class="flex-1 py-2 px-4 bg-green-500 text-white rounded">Forecast Usage</button>
+            </div>
+            <div id="usage-chart" class="mt-6">
+                <canvas id="usage-chart-canvas"></canvas>
+            </div>
+        </div>
+        <div id="tab2-content" class="tab-content">
+            <div class="mb-4">
+                <label for="time-period-2" class="block text-gray-700">Time Period</label>
+                <input type="text" id="time-period-2" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="flex space-x-4">
+                <button class="flex-1 py-2 px-4 bg-blue-500 text-white rounded">Check Usage</button>
+                <button class="flex-1 py-2 px-4 bg-red-500 text-white rounded">Detect Anomalies</button>
+            </div>
+        </div>
+        <p class="text-center text-gray-500 mt-6">a zna product</p>
+    </div>
+    <script type="module">
+        document.getElementById('tab1-btn').addEventListener('click', () => {
+            document.getElementById('tab1-content').classList.add('active');
+            document.getElementById('tab2-content').classList.remove('active');
+            document.getElementById('tab1-btn').classList.add('bg-blue-500', 'text-white');
+            document.getElementById('tab1-btn').classList.remove('bg-gray-200', 'text-gray-700');
+            document.getElementById('tab2-btn').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('tab2-btn').classList.remove('bg-blue-500', 'text-white');
+        });
+
+        document.getElementById('tab2-btn').addEventListener('click', () => {
+            document.getElementById('tab2-content').classList.add('active');
+            document.getElementById('tab1-content').classList.remove('active');
+            document.getElementById('tab2-btn').classList.add('bg-blue-500', 'text-white');
+            document.getElementById('tab2-btn').classList.remove('bg-gray-200', 'text-gray-700');
+            document.getElementById('tab1-btn').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('tab1-btn').classList.remove('bg-blue-500', 'text-white');
+        });
+
+        document.getElementById('check-usage-btn').addEventListener('click', () => {
+            const userId = document.getElementById('user-id').value;
+            fetch(`/user_usage/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    const labels = data.map(item => item.session_date);
+                    const usageData = data.map(item => item.mb_used);
+
+                    const ctx = document.getElementById('usage-chart-canvas').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Usage (MB)',
+                                data: usageData,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true,
+                                tension: 0.4,
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
+<!-- The analysis.html file is a bit more complex than the login.html file. -->

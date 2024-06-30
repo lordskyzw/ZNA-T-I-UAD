@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+        <h1 class="text-2xl font-bold mb-6 text-center">User Data Dashboard</h1>
+        <div class="mb-4">
+            <label for="user_id" class="block text-gray-700">User ID</label>
+            <input type="text" id="user_id" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <button onclick="fetchData()" class="w-full bg-blue-500 text-white py-2 rounded-lg mt-4 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Load Data</button>
+        </div>
+        <canvas id="usageChart" width="400" height="200"></canvas>
+        <div class="flex justify-between mt-4">
+            <button onclick="window.history.back()" class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">Back</button>
+            <button onclick="forecast()" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">Forecast</button>
+        </div>
+    </div>
+
+    <script>
+        function fetchData() {
+            const userId = document.getElementById('user_id').value;
+            fetch(`/data/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(entry => entry.session_date);
+                    const mbUsed = data.map(entry => entry.mb_used);
+                    const totalMessages = data.map(entry => entry.total_messages_used);
+                    const totalMinutes = data.map(entry => entry.total_minutes);
+
+                    const ctx = document.getElementById('usageChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'MB Used',
+                                    data: mbUsed,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 2,
+                                    fill: false
+                                },
+                                {
+                                    label: 'Total Messages Used',
+                                    data: totalMessages,
+                                    borderColor: 'rgba(255, 159, 64, 1)',
+                                    borderWidth: 2,
+                                    fill: false
+                                },
+                                {
+                                    label: 'Total Minutes',
+                                    data: totalMinutes,
+                                    borderColor: 'rgba(153, 102, 255, 1)',
+                                    borderWidth: 2,
+                                    fill: false
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Date'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Usage'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+        }
+
+        function forecast() {
+            // Placeholder function for forecast functionality
+            alert('Forecast functionality coming soon!');
+        }
+    </script>
+</body>
+</html>
