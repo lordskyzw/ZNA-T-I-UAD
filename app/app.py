@@ -1,6 +1,6 @@
 from flask import Flask, request, session, render_template, jsonify
 from flask_cors import CORS
-from utilities.basics import check_credentials, user_usage
+from utilities.basics import check_credentials, user_usage, get_predictions
 from dotenv import load_dotenv
 import logging
 import os
@@ -42,6 +42,25 @@ def check_usage(user_id):
     except Exception as e:
         return str(e), 400
 
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    if 'username' not in session:
+        return 'Unauthorized', 401
+    
+    try:
+        user_id = request.form['user_id']
+        days_ahead = request.form['days_ahead']
+        internet_prediction, messages_prediction, calls_prediction = get_predictions(user_id=user_id, days_ahead=days_ahead)
+        response = {
+            'internet_prediction': internet_prediction,
+            'messages_prediction': messages_prediction,
+            'calls_prediction': calls_prediction
+        }
+        
+        return jsonify(response), 200
+    except Exception as e:
+        return str(e), 400
 
 @app.route('/logout', methods=['GET'])
 def logout():
