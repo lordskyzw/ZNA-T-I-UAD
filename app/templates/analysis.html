@@ -63,6 +63,10 @@
         <p class="text-center text-gray-500 mt-6">a zna product</p>
     </div>
     <script type="module">
+        let usageChart = null;
+        let messagesChart = null;
+        let minutesChart = null;
+
         document.getElementById('tab1-btn').addEventListener('click', () => {
             document.getElementById('tab1-content').classList.add('active');
             document.getElementById('tab2-content').classList.remove('active');
@@ -92,9 +96,20 @@
                     const messagesData = data.map(item => item.total_messages_used);
                     const minutesData = data.map(item => item.total_minutes);
 
+                    // Destroy existing charts if they exist
+                    if (usageChart) {
+                        usageChart.destroy();
+                    }
+                    if (messagesChart) {
+                        messagesChart.destroy();
+                    }
+                    if (minutesChart) {
+                        minutesChart.destroy();
+                    }
+
                     // Data Usage Chart
                     const usageCtx = document.getElementById('usage-chart-canvas').getContext('2d');
-                    new Chart(usageCtx, {
+                    usageChart = new Chart(usageCtx, {
                         type: 'line',
                         data: {
                             labels: labels,
@@ -121,7 +136,7 @@
 
                     // Messages Chart
                     const messagesCtx = document.getElementById('messages-chart-canvas').getContext('2d');
-                    new Chart(messagesCtx, {
+                    messagesChart = new Chart(messagesCtx, {
                         type: 'line',
                         data: {
                             labels: labels,
@@ -148,7 +163,7 @@
 
                     // Minutes Chart
                     const minutesCtx = document.getElementById('minutes-chart-canvas').getContext('2d');
-                    new Chart(minutesCtx, {
+                    minutesChart = new Chart(minutesCtx, {
                         type: 'line',
                         data: {
                             labels: labels,
