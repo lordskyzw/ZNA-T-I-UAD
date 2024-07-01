@@ -302,15 +302,15 @@
     });
 
         
-        document.getElementById('check-usage-plan-btn').addEventListener('click', () => {
-            const plan = document.getElementById('plan-2').value;
-            fetch(`/plan_usage/${plan}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => console.error('Error:', error));
-        });
+        // document.getElementById('check-usage-plan-btn').addEventListener('click', () => {
+        //     const plan = document.getElementById('plan-2').value;
+        //     fetch(`/plan_usage/${plan}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             console.log(data);
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // });
 
         document.getElementById('detect-anomalies-btn').addEventListener('click', () => {
             const plan = document.getElementById('plan-2').value;
