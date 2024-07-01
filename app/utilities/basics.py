@@ -7,6 +7,8 @@ import logging
 
 
 mongo_uri = os.getenv('MONGO_URI')
+env_username = os.getenv('username')
+env_password = os.getenv('password')
 
 def find_file(filename, search_path="."):
     """
@@ -30,19 +32,19 @@ else:
 
 
 def check_credentials(username, password):
-    # Connect to MongoDB
-    client = MongoClient(mongo_uri)
-    db = client['ZNA']
-    collection = db['users']  
+    # # Connect to MongoDB
+    # client = MongoClient(mongo_uri)
+    # db = client['ZNA']
+    # collection = db['users']  
 
-    # Query the database for the credentials
-    user = collection.find_one({'username': username, 'password': password})
+    # # Query the database for the credentials
+    # user = collection.find_one({'username': username, 'password': password})
 
-    # Close the connection
-    client.close()
+    # # Close the connection
+    # client.close()
 
-    # Return True if user exists, else False
-    if user:
+    # # Return True if user exists, else False
+    if username == env_username and password == env_password:
         return True
     else:
         return False
