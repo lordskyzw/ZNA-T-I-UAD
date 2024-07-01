@@ -48,12 +48,18 @@
         </div>
         <div id="tab2-content" class="tab-content">
             <div class="mb-4">
-                <label for="time-period-2" class="block text-gray-700">Time Period</label>
-                <input type="text" id="time-period-2" class="w-full p-2 border border-gray-300 rounded">
+                <label for="plan-2" class="block text-gray-700">Plan</label>
+                <select name="plan-2" id="plan-2" class="w-full p-2 border border-gray-300 rounded">
+                    <option value="surf">Surf</option>
+                    <option value="ultimate">Ultimate</option>
+                </select>
             </div>
             <div class="flex space-x-4">
-                <button class="flex-1 py-2 px-4 bg-blue-500 text-white rounded">Check Usage</button>
-                <button class="flex-1 py-2 px-4 bg-red-500 text-white rounded">Detect Anomalies</button>
+                <!--<button id="check-usage-plan-btn" class="flex-1 py-2 px-4 bg-blue-500 text-white rounded">Check Usage</button>-->
+                <button id="detect-anomalies-btn" class="flex-1 py-2 px-4 bg-red-500 text-white rounded">Detect Anomalies</button>
+            </div>
+            <div id="anomalies-table-container" class="mt-6">
+                
             </div>
         </div>
         <p class="text-center text-gray-500 mt-6">a zna product</p>
@@ -187,7 +193,6 @@
                 .catch(error => console.error('Error:', error));
         });
 
-        
         document.getElementById('forecast-usage-btn').addEventListener('click', () => {
         const userId = document.getElementById('user-id').value;
         fetch(`/predict/${userId}`)
@@ -296,8 +301,52 @@
             .catch(error => console.error('Error:', error));
     });
 
+        
+        document.getElementById('check-usage-plan-btn').addEventListener('click', () => {
+            const plan = document.getElementById('plan-2').value;
+            fetch(`/plan_usage/${plan}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error));
+        });
 
+        document.getElementById('detect-anomalies-btn').addEventListener('click', () => {
+            const plan = document.getElementById('plan-2').value;
+            fetch(`/detect_anomalies/${plan}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
 
+                    const tableContainer = document.getElementById('anomalies-table-container');
+                    tableContainer.innerHTML = `
+                        <table class="min-w-full bg-white border border-gray-300" id="anomaly-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b">User ID</th>
+                                    <th class="py-2 px-4 border-b">Total Minutes</th>
+                                    <th class="py-2 px-4 border-b">Total Messages</th>
+                                    <th class="py-2 px-4 border-b">Total MB Used</th>
+                                    <th class="py-2 px-4 border-b">Suggested Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.map(anomaly => `
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">${anomaly.user_id}</td>
+                                        <td class="py-2 px-4 border-b">${anomaly.total_minutes}</td>
+                                        <td class="py-2 px-4 border-b">${anomaly.total_messages_used}</td>
+                                        <td class="py-2 px-4 border-b">${anomaly.total_mb_used}</td>
+                                        <td class="py-2 px-4 border-b text-red-500">${anomaly['Suggested Action']}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                })
+                .catch(error => console.error('Error:', error));
+        });
     </script>
 </body>
 </html>

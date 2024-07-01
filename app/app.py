@@ -1,6 +1,6 @@
 from flask import Flask, request, session, render_template, jsonify
 from flask_cors import CORS
-from utilities.basics import check_credentials, user_usage, get_predictions
+from utilities.basics import check_credentials, user_usage, get_predictions, get_anomalies
 from dotenv import load_dotenv
 import logging
 import os
@@ -59,6 +59,18 @@ def predict(user_id):
     
     except Exception as e:
         return str(e), 400
+
+
+@app.route('/detect_anomalies/<plan>', methods=['GET'])
+def detect_anomalies(plan):
+    if 'username' not in session:
+        return 'Unauthorized', 401
+    anomalies = get_anomalies(plan)
+
+    return jsonify(anomalies), 200
+
+    
+    
 
 @app.route('/logout', methods=['GET'])
 def logout():

@@ -124,3 +124,34 @@ def get_predictions(user_id, days_ahead):
     calls_prediction = full_data_calls.head(days_ahead).to_dict(orient='records')
     
     return internet_prediction, messages_prediction, calls_prediction
+
+
+def get_anomalies(plan):
+    if plan == 'surf':
+        file_path = find_file('surf_plans_anomalies.csv')
+        if file_path:
+            plan_data = pd.read_csv(file_path)
+            plan_data.drop(columns=['Anomaly'], inplace=True)
+            # add "suggested action" column with the following logic:
+            # entries in this column depend on the total_mb_used column if the value in total_mb_used is greater than 1 million the 'Suggested Action' value shall be 'Upgrade to Ultimate Plan'
+            # if the value in total_mb_used is less than 1 million the 'Suggested Action' value shall be 'No Action Required'
+            plan_data['Suggested Action'] = plan_data['total_mb_used'].apply(lambda x: 'Upgrade to Ultimate Plan' if x > 1000000 else 'No Action Required')
+
+            anomalies = plan_data.to_dict(orient='records')
+        else:
+            raise FileNotFoundError('surf_plans_anomalies.csv not found')
+    else:
+        file_path = find_file('ultimate_plans_anomalies.csv')
+        if file_path:
+            plan_data = pd.read_csv(file_path)
+            plan_data.drop(columns=['Anomaly'], inplace=True)
+            # add "suggested action" column with the following logic:
+            # entries in this column depend on the total_mb_used column if the value in total_mb_used is less than 1 million the 'Suggested Action' value shall be 'Downgrade to Surf Plan'
+            # if the value in total_mb_used is greater than 10 million the 'Suggested Action' value shall be 'High Usage Detected'
+            # if the value in total_mb_used is between 1 million and 10 million the 'Suggested Action' value shall be 'No Action Required'
+            plan_data['Suggested Action'] = plan_data['total_mb_used'].apply(lambda x: 'Downgrade to Surf Plan' if x < 1000000 else ('Investigate Usage' if x > 10000000 else 'No Action Required'))
+            anomalies = plan_data.to_dict(orient='records')
+        else:
+            raise FileNotFoundError('ultimate_plans_anomalies.csv not found')
+        
+    return anomalies
